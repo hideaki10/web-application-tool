@@ -3,9 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
+	"text/template"
 
 	"github.com/hideaki10/web-application-tool/pkg/models"
 )
@@ -16,6 +16,16 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
+
+	s, err := app.snippets.Latest()
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	// for _, snippet := range s {
+	// 	fmt.Fprintf(w, "%v\n", snippet)
+	// }
+	data := &templateData{Snippets: s}
 
 	files := []string{
 		"./ui/html/home.page.tmpl",
@@ -31,16 +41,21 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ts.Execute(w, nil)
+	err = ts.Execute(w, data)
 	if err != nil {
-		//log.Println(err.Error())
-		app.errorLog.Println(err.Error())
-		//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		app.serverError(w, err)
-		return
 	}
 
-	w.Write([]byte("Hello World"))
+	// err = ts.Execute(w, nil)
+	// if err != nil {
+	// 	//log.Println(err.Error())
+	// 	app.errorLog.Println(err.Error())
+	// 	//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	// 	app.serverError(w, err)
+	// 	return
+	// }
+
+	// w.Write([]byte("Hello World"))
 }
 
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
@@ -63,8 +78,23 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	data := &templateData{Snippet: s}
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
 
-	fmt.Fprintf(w, "%v", s)
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	err = ts.Execute(w, data)
+	if err != nil {
+		app.serverError(w, err)
+	}
+	// fmt.Fprintf(w, "%v", s)
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
