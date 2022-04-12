@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"github.com/hideaki10/web-application-tool/pkg/models"
 )
@@ -21,30 +20,32 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Snippets: s,
+	})
 	// for _, snippet := range s {
 	// 	fmt.Fprintf(w, "%v\n", snippet)
 	// }
-	data := &templateData{Snippets: s}
+	// data := &templateData{Snippets: s}
 
-	files := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
+	// files := []string{
+	// 	"./ui/html/home.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
 
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.errorLog.Println(err.Error())
-		//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		app.serverError(w, err)
-		return
-	}
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.errorLog.Println(err.Error())
+	// 	//http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	// 	app.serverError(w, err)
+	// 	return
+	// }
 
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	// err = ts.Execute(w, data)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
 
 	// err = ts.Execute(w, nil)
 	// if err != nil {
@@ -78,22 +79,27 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	data := &templateData{Snippet: s}
-	files := []string{
-		"./ui/html/show.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
 
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	app.render(w, r, "show.page.tmpl", &templateData{
+		Snippet: s,
+	})
+	// }
+	// data := &templateData{Snippet: s}
+	// files := []string{
+	// 	"./ui/html/show.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
+
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// 	return
+	// }
+	// err = ts.Execute(w, data)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
 	// fmt.Fprintf(w, "%v", s)
 }
 
