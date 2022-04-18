@@ -5,6 +5,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/hideaki10/web-application-tool/pkg/forms"
 	"github.com/hideaki10/web-application-tool/pkg/models"
 )
 
@@ -12,6 +13,7 @@ type templateData struct {
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
 	CurrentYear int
+	Form        *forms.Form
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

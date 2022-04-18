@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/hideaki10/web-application-tool/pkg/forms"
 	"github.com/hideaki10/web-application-tool/pkg/models"
 )
 
@@ -121,6 +122,45 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	title := r.PostForm.Get("title")
 	content := r.PostForm.Get("content")
 	expires := r.PostForm.Get("expires")
+
+	form := forms.New(r.PostForm)
+
+	form.Required("title", "content", "expires")
+
+	//
+	form.MaxLength("title", 100)
+
+	form.PermittedValues("expires", "365", "7", "1")
+
+	if !form.Valid() {
+		app.render(w, r, "create.page.tmpl", &templateData{
+			Form: form,
+		})
+		return
+	}
+	// errors := make(map[string]string)
+
+	// if strings.TrimSpace(title) == "" {
+	// 	errors["title"] = "title field cannot be blank"
+	// } else if utf8.RuneCountInString(title) > 100 {
+	// 	errors["title"] = "this field is too lang(maximum is 100 characters)"
+	// }
+
+	// if strings.TrimSpace(content) == "" {
+	// 	errors["content"] = "this field cannot be blank"
+	// }
+
+	// if strings.TrimSpace(expires) == "" {
+	// 	errors["expires"] = "This field cannot be blank"
+	// } else if expires != "365" && expires != "7" && expires != "1" {
+	// 	errors["expires"] = "This field is invalid"
+	// }
+
+	// if len(errors) > 0 {
+	//
+	// 	return
+	// }
+
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
 		app.serverError(w, err)
