@@ -82,6 +82,7 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app.render(w, r, "show.page.tmpl", &templateData{
+
 		Snippet: s,
 	})
 	// }
@@ -166,11 +167,31 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
+
+	app.session.Put(r, "flash", "snippent successfully created! ")
 	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
-	w.Write([]byte("create a new snippet..."))
+	// w.Write([]byte("create a new snippet..."))
 }
 
 func (app *application) createSnippetForm(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, r, "create.page.tmpl", nil)
+}
+
+func (app *application) signupUserForm(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Display the user signup form...")
+}
+
+func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Create a new user...")
+}
+
+func (app *application) loginUserForm(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Create a new user...")
+}
+func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Create a new user...")
+}
+func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Logout the  user...")
 }
