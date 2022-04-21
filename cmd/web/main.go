@@ -22,13 +22,17 @@ type application struct {
 	session  *sessions.Session
 	snippets *mysql.SnippetModel
 	template map[string]*template.Template
+	users    *mysql.UserModel
 }
 
 func main() {
-
+	// server
 	addr := flag.String("addr", ":4000", "HTTP network address")
+
+	// access mysql
 	dsn := flag.String("dsn", "hideaki100:20220407221144Toppan!!!@tcp(192.168.3.18:3306)/snippetbox?parseTime=true", "MySQL data source name")
 
+	// the path of secret key
 	secret := flag.String("secret", "ssdd", "secret key")
 
 	flag.Parse()
@@ -57,6 +61,7 @@ func main() {
 		session:  session,
 		snippets: &mysql.SnippetModel{DB: db},
 		template: templaterCache,
+		users:    &mysql.UserModel{DB: db},
 	}
 
 	tlsConfig := &tls.Config{
