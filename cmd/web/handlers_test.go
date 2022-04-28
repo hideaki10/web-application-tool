@@ -16,8 +16,8 @@ func TestPing(t *testing.T) {
 		t.Errorf("want %d; got %d", http.StatusOK, sd)
 	}
 
-	if string(body) != "OK" {
-		t.Errorf("want body to equal %q", "OK")
+	if string(body) != "ok" {
+		t.Errorf("want body to equal %q", "ok")
 	}
 	// app := &application{
 	// 	errorLog: log.New(io.Discard, "", 0),
